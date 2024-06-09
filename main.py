@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-import home ,account, clients, orders
+from sites import home ,account, clients, orders, delivery,register_client
 
 #x = st.image('logo.jpg', caption='Company Logo')
 
@@ -11,7 +11,7 @@ hide_menu_style = """
         <style>
         #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
-        </style>
+        </style>¸
         """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
@@ -29,9 +29,9 @@ class MultiApp:
     with st.sidebar:
       app = option_menu(menu_title='All Apps ',
                         options=[
-                            'Home', 'Account', 'Clients', 'Orders'],
+                            'Home', 'Account', 'Members', 'Orders', 'Manage Delivery', 'Add Member'],
                         icons=[
-                            'house-fill', 'person-circle', 'people-fill', 'box-seam' ],
+                            'house-fill', 'person-circle', 'people-fill', 'basket3-fill', 'bicycle' ],
                         menu_icon='cast',
                         default_index=1,
                         styles={
@@ -59,11 +59,14 @@ class MultiApp:
       home.app()
     if app == "Account":
       account.app()
-    if app == "Clients":
+    if app == "Members":
       clients.app()
     if app == "Orders":
       orders.app()
-
+    if app == "Manage Delivery":
+      delivery.app()
+    if app == "Add Member":
+      register_client.app()
     
 
   run()
