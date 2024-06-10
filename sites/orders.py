@@ -8,7 +8,7 @@ def reset():
   st.rerun()
 
 def getProductList() ->list:
-  return ['Product1' , 'Product2', 'Product3', 'Product4', 'Product5', 'Product6','Product7','Product8']
+  return ['Product1' , 'Product2', 'Product3', 'Product4', 'Product5', 'Product6','Product7', 'Product8', 'Product9']
 
 
 def app():
@@ -16,10 +16,10 @@ def app():
 
   ## Order Page UI
 
-  st1 = "🥡 :orange[Order Manager]  IN 🧺 Cart :red[{} item(s)] ".format(str(cart))
-  st.header(st1)
+  st1 = "IN 🧺 Cart {} item(s) ".format(str(cart))
+  st.header("🥡 :orange[Orders Manager] ")
 
-  st.markdown(" ")
+  st.markdown("<h2>"+st1+"<h2>",unsafe_allow_html=True)
 
   
 
@@ -43,10 +43,11 @@ def app():
       key1 = "p" + str(k)
       key2 = "q" + str(k)
       col[c].text(products[k])
-      k += 1
-      c1 = col[c].checkbox("Add",key=key1,)
+      
+      c1 = col[c].checkbox("Add to Cart",key=key1,)
       q1 = col[c].number_input(label="Quantity", max_value=5,min_value=1,value=1,key=key2)
-      rows.append([c1,q1])
+      rows.append([c1,q1,products[k]])
+      k += 1
 
   p = 0
   x = False
