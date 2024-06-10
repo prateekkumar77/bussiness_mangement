@@ -1,27 +1,19 @@
 import streamlit as st
+from features import reset, getProductList
 
 cart = 0
-
-
-def reset():
-  cart = 0
-  st.rerun()
-
-def getProductList() ->list:
-  return ['Product1' , 'Product2', 'Product3', 'Product4', 'Product5', 'Product6','Product7', 'Product8', 'Product9']
 
 
 def app():
   global cart
 
-  ## Order Page UI
+
+## Order Page UI
 
   st1 = "IN 🧺 Cart {} item(s) ".format(str(cart))
   st.header("🥡 :orange[Orders Manager] ")
 
   st.markdown("<h2>"+st1+"<h2>",unsafe_allow_html=True)
-
-  
 
   products = getProductList()
   no_products = len(products)
@@ -32,8 +24,10 @@ def app():
   
   rows = []
 
+# Menu GRID UI 
+  expan1 = st.expander("Category 1")
 
-  con1 = st.container()
+  con1 = expan1.container()
   k = 0
   for r in range(reqRows):
     col = con1.columns(4)
@@ -49,6 +43,7 @@ def app():
       rows.append([c1,q1,products[k]])
       k += 1
 
+#Cart Value Calculation
   p = 0
   x = False
 
@@ -67,6 +62,7 @@ def app():
     st.rerun()
 
 
-
+#Reset Button
   col1,col2,col3 = st.columns(3)
   button1 = col1.button("Reset", key='reset', on_click=reset)
+
