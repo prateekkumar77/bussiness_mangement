@@ -33,5 +33,6 @@ class subscription_plans:
     products:list[str]
     validity:int
     susbscriptions_desc:str
+    default_delivery_time:str
     price:int
 
