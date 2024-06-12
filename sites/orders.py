@@ -63,12 +63,7 @@ def app():
       st.warning("Please Select a Member")
     #print("Selected value {}".format(sb_value))
     con_client = st.container()
-    #ins = con_client.text_input(label="Special Instructions", key="ins1")
-    #delivery_time = con_client.time_input(label="Select a delivery Time", value=datetime.time(hour=6,minute=30), help="Time is in IST Timezone")
-    #del_date = ""
-    #cbx3 = con_client.checkbox("Delivery Not Today", key="date_cb")
-    #if cbx3:
-      #del_date = con_client.date_input("Choose a Data",value="today",min_value=datetime.date.today())
+  
   else:
     con_client = st.container()
     col1,col2 = con_client.columns(2)
