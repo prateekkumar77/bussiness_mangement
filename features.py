@@ -25,3 +25,7 @@ def reset() ->None:
   st.session_state.p8 = False
   st.session_state.p9 = False
   st.session_state.p10 = False
+  st.session_state.check1 = False
+  st.session_state.date_cb = False
+  #st.session_state.sb2 = None
+  st.session_state.ins1 = None
