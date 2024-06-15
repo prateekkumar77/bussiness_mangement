@@ -11,7 +11,7 @@ def get_live_db_object(logger):
     try:
         db = connector.connect(host=HOST,user=MYSQL_USER,password=MYSQL_ROOT_PASSWORD,database=DATABASE_NAME,)
     except (connector.Error, IOError) as err:
-        print("Failed to connect")
+        #print("Failed to connect")
         logger.error("Failed to connect to database: %s", err.errno)
         return False
 

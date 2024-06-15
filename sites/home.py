@@ -1,23 +1,9 @@
 import streamlit as st
 from database import get_live_db_object, MYSQL_USER, HOST, DATABASE_NAME
-import logging
+from features import initialize_logger
 
-#Defining error and info loggers
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger1 = initialize_logger(__name__)
 
-logger1 = logging.getLogger(__name__)
-logger1.setLevel(logging.INFO)
-
-        # Log to console
-handler = logging.StreamHandler()
-handler.setFormatter(formatter)
-logger1.addHandler(handler)
-
-        # Also log to a file
-file_handler = logging.FileHandler("logs/app-logs.log")
-file_handler.setFormatter(formatter)
-logger1.addHandler(file_handler)
-# END LOGGER DEFINATION
 
 def app():
   

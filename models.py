@@ -73,6 +73,7 @@ class product:
         val = (self.p_id, self.product_name, self.description, self.price, self.img_url, self.category)
        
         try:
+             logger1.info("DB INSERT query executed")
              cursor.execute(sql, val)
         except mysql_error as err:
              logger1.error(err)
@@ -81,8 +82,8 @@ class product:
         
         if flag:
             print(cursor.rowcount, " record inserted.")
-            logger1.info(str(cursor.rowcount) + " record inserted")
             db.commit()
+            logger1.info(str(cursor.rowcount) + " record inserted")
         cursor.close()
         db.close()
         return flag

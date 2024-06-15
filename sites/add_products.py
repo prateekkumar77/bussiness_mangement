@@ -1,25 +1,9 @@
 import streamlit as st
-from features import html_clear_input
+from features import initialize_logger
 from streamlit.components.v1 import html
 from models import product
-import logging
 
-#Defining error and info loggers
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-
-logger1 = logging.getLogger(__name__)
-logger1.setLevel(logging.INFO)
-
-        # Log to console
-handler = logging.StreamHandler()
-handler.setFormatter(formatter)
-logger1.addHandler(handler)
-
-        # Also log to a file
-file_handler = logging.FileHandler("logs/app-logs.log")
-file_handler.setFormatter(formatter)
-logger1.addHandler(file_handler)
-# END LOGGER DEFINATION
+logger1 = initialize_logger(__name__)
 
 def app():
     st.header("🎁 :orange[Add New Product]",divider=True)

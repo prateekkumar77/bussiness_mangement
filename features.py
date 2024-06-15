@@ -3,39 +3,27 @@ import logging
 
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
-def log_info(module_name:str=__name__) -> logging.getLoggerClass:
+def initialize_logger(module_name:str=__name__) -> logging.getLoggerClass:
     
+    #Defining error and info loggers
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
     logger1 = logging.getLogger(module_name)
     logger1.setLevel(logging.INFO)
 
-    # Log to console
+        # Log to console
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
     logger1.addHandler(handler)
 
-    # Also log to a file
-    file_handler = logging.FileHandler("app-logs.log")
+            # Also log to a file
+    file_handler = logging.FileHandler("logs/app-logs.log")
     file_handler.setFormatter(formatter)
     logger1.addHandler(file_handler)
+# END LOGGER DEFINATION
 
     return logger1
 
-def log_error(module_name:str=__name__) -> logging.getLoggerClass:
-    
-    logger2 = logging.getLogger(module_name)
-    logger2.setLevel(logging.ERROR)
-
-    # Log to console
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-    logger2.addHandler(handler)
-
-    # Also log to a file
-    file_handler = logging.FileHandler("app-logs.log")
-    file_handler.setFormatter(formatter)
-    logger2.addHandler(file_handler)
-
-    return logger2
 
 html_style_theme_switch = """
         <style>
