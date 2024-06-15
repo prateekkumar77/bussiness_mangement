@@ -1,41 +1,41 @@
 import streamlit as st
 import logging
 
-def log_info(module_name:str=__name__) -> logging:
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+def log_info(module_name:str=__name__) -> logging.getLoggerClass:
     
-    logger = logging.getLogger(module_name)
-    logger.setLevel(logging.INFO)
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logger1 = logging.getLogger(module_name)
+    logger1.setLevel(logging.INFO)
 
     # Log to console
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    logger1.addHandler(handler)
 
     # Also log to a file
     file_handler = logging.FileHandler("app-logs.log")
     file_handler.setFormatter(formatter)
-    logger.info.addHandler(file_handler)
+    logger1.addHandler(file_handler)
 
-    return logger
+    return logger1
 
-def log_error(module_name:str=__name__) -> logging:
+def log_error(module_name:str=__name__) -> logging.getLoggerClass:
     
-    logger = logging.getLogger(module_name)
-    logger.setLevel(logging.ERROR)
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logger2 = logging.getLogger(module_name)
+    logger2.setLevel(logging.ERROR)
 
     # Log to console
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    logger2.addHandler(handler)
 
     # Also log to a file
     file_handler = logging.FileHandler("app-logs.log")
     file_handler.setFormatter(formatter)
-    logger.info.addHandler(file_handler)
+    logger2.addHandler(file_handler)
 
-    return logger
+    return logger2
 
 html_style_theme_switch = """
         <style>

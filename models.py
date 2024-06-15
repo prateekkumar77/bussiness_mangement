@@ -2,17 +2,7 @@
 import datetime
 from database import get_live_db_object
 from mysql.connector import Error as mysql_error
-from features import log_info ,log_error
 
-MYSQL_ROOT_PASSWORD = 'root-pass'
-MYSQL_USER = 'root'
-DATABASE_NAME = 'Test_DB1'
-HOST = 'localhost'
-
-#db = ms_connector.connect()
-
-i_log = log_info(__name__)
-err_log = log_error(__name__)
 
 class client:
 
@@ -75,9 +65,9 @@ class product:
         self.img_url = img_url
         self.category = category
 
-    def add_product(self) -> bool:
+    def add_product_toDB(self,logger1) -> bool:
         flag = True
-        db = get_live_db_object()
+        db = get_live_db_object(logger1)
         cursor = db.cursor()
         sql = "INSERT INTO products (p_id, product_name, product_description, price, image_url, category) VALUES (%s, %s, %s, %s, %s, %s)"
         val = (self.p_id, self.product_name, self.description, self.price, self.img_url, self.category)
@@ -85,12 +75,13 @@ class product:
         try:
              cursor.execute(sql, val)
         except mysql_error as err:
-             err_log.error(err)
+             logger1.error(err)
+             print(err)
              flag = False
         
-        if not flag:
-            print(cursor.rowcount, "record inserted.")
-            i_log.info(str(cursor.rowcount) + " record inserted")
+        if flag:
+            print(cursor.rowcount, " record inserted.")
+            logger1.info(str(cursor.rowcount) + " record inserted")
             db.commit()
         cursor.close()
         db.close()
