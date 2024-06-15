@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 from sites import home ,account, clients, orders, delivery,register_client, add_products
-from features import hmtl_light_mode,htm_dark_mode,html_style_theme_switch
+from features import html_light_mode,html_dark_mode,html_style_theme_switch
 
 #x = st.image('logo.jpg', caption='Company Logo')
 
@@ -18,7 +18,7 @@ st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 st.markdown(html_style_theme_switch,unsafe_allow_html=True)
 
-st.markdown(hmtl_light_mode,unsafe_allow_html=True)
+st.markdown(html_light_mode,unsafe_allow_html=True)
 
 
 class MultiApp:

@@ -1,5 +1,18 @@
 #data which is persisted in a database is defined here
 import datetime
+from database import get_live_db_object
+from mysql.connector import Error as mysql_error
+from features import log_info ,log_error
+
+MYSQL_ROOT_PASSWORD = 'root-pass'
+MYSQL_USER = 'root'
+DATABASE_NAME = 'Test_DB1'
+HOST = 'localhost'
+
+#db = ms_connector.connect()
+
+i_log = log_info(__name__)
+err_log = log_error(__name__)
 
 class client:
 
@@ -54,10 +67,35 @@ class order:
 
 
 class product:
-    productID:str
-    productName:str
-    price:int
-    productImg:str
+    def __init__(self,id:str,name:str,description:str,price:int,img_url:str,category:str) -> None:
+        self.p_id = id
+        self.product_name = name
+        self.description = description
+        self.price = price
+        self.img_url = img_url
+        self.category = category
+
+    def add_product(self) -> bool:
+        flag = True
+        db = get_live_db_object()
+        cursor = db.cursor()
+        sql = "INSERT INTO products (p_id, product_name, product_description, price, image_url, category) VALUES (%s, %s, %s, %s, %s, %s)"
+        val = (self.p_id, self.product_name, self.description, self.price, self.img_url, self.category)
+       
+        try:
+             cursor.execute(sql, val)
+        except mysql_error as err:
+             err_log.error(err)
+             flag = False
+        
+        if not flag:
+            print(cursor.rowcount, "record inserted.")
+            i_log.info(str(cursor.rowcount) + " record inserted")
+            db.commit()
+        cursor.close()
+        db.close()
+        return flag
+
 
 
 class subscription_plans:

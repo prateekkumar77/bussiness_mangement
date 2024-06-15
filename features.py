@@ -1,5 +1,41 @@
 import streamlit as st
+import logging
 
+def log_info(module_name:str=__name__) -> logging:
+    
+    logger = logging.getLogger(module_name)
+    logger.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+    # Log to console
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    # Also log to a file
+    file_handler = logging.FileHandler("app-logs.log")
+    file_handler.setFormatter(formatter)
+    logger.info.addHandler(file_handler)
+
+    return logger
+
+def log_error(module_name:str=__name__) -> logging:
+    
+    logger = logging.getLogger(module_name)
+    logger.setLevel(logging.ERROR)
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+    # Log to console
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    # Also log to a file
+    file_handler = logging.FileHandler("app-logs.log")
+    file_handler.setFormatter(formatter)
+    logger.info.addHandler(file_handler)
+
+    return logger
 
 html_style_theme_switch = """
         <style>
@@ -22,17 +58,24 @@ html_style_theme_switch = """
     </style>
         """
 
-htm_dark_mode= """
+html_dark_mode= """
 <script>
             let element = document.body;
             element.className = "dark-mode";
     </script>
         
        """
-hmtl_light_mode = """
+html_light_mode = """
 <script>
             let element = document.body;
             element.className = "light-mode";
+</script>
+"""
+
+html_clear_input = """
+<script>
+        location.reload();
+
 </script>
 """
 

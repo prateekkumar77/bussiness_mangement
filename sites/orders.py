@@ -77,7 +77,7 @@ def app():
     add_society = col4.text_input(label="Society", max_chars=20, key="cl-society", placeholder="Society Name")
     add_remainder = add_con.text_input(label="Address Line 2", max_chars=50, key='cl-address', placeholder="Address Line 2")
 
-  ins = con_client.text_input(label="Special Instructions", key="ins1", max_chars=50)
+  ins = con_client.text_area(label="Special Instructions", key="ins1", max_chars=50)
   delivery_time = con_client.time_input(label="Select a delivery Time", value=datetime.time(hour=6,minute=30), help="Time is in IST Timezone")
   del_date = ""
   cbx3 = con_client.checkbox("Delivery Not Today", key="date_cb")
