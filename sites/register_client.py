@@ -5,8 +5,9 @@ import datetime
 client1 = client()
 
 def app():
-        st.header("📝 :orange[Client Registration]")
+        st.header("📝 :orange[Client Registration]",divider=True)
         #st.markdown("<h2 style= 'text-align: center'>Client Registration<h2>", unsafe_allow_html=True)
+        st.markdown("")
         container1 = st.container()
         col1,col2 = container1.columns(2)
         name = col1.text_input(label="Full Name", max_chars=50,placeholder="Enter Full Name")

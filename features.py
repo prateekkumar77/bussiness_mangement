@@ -1,6 +1,42 @@
 import streamlit as st
 
 
+html_style_theme_switch = """
+        <style>
+        body {
+            padding: 25px;
+            background-color: white;
+            color: black;
+            font-size: 25px;
+        }
+
+        .dark-mode {
+            background-color: black;
+            color: white;
+        }
+
+        .light-mode {
+            background-color: white;
+            color: black;
+        }
+    </style>
+        """
+
+htm_dark_mode= """
+<script>
+            let element = document.body;
+            element.className = "dark-mode";
+    </script>
+        
+       """
+hmtl_light_mode = """
+<script>
+            let element = document.body;
+            element.className = "light-mode";
+</script>
+"""
+
+
 def search(item:str) -> list[str]:
     pass
 

@@ -18,7 +18,7 @@ def search(item:str):
    return ["Test1", "Test2", "Test3", "test4"]
 
 def app():
-  st.header("🧑‍💼 :orange[Member Data Manager]")
+  st.header("🧑‍💼 :orange[Member Data Manager]",divider=True)
   st.markdown("")
   st.markdown("")
   st.markdown("")

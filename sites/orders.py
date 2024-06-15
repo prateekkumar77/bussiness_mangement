@@ -17,7 +17,7 @@ def app():
 ## Order Page UI
 
   st1 = "IN 🧺 Cart {} item(s) ".format(str(cart))
-  st.header("🥡 :orange[Orders Manager] ")
+  st.header("🥡 :orange[Orders Manager] ",divider=True)
 
   st.markdown("<h2>"+st1+"<h2>",unsafe_allow_html=True)
 
