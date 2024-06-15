@@ -39,7 +39,7 @@ class MultiApp:
                         icons=[
                             'house-fill', 'person-circle', 'people-fill', 'cart-plus', 'bicycle','person-fill-add','plus-square-fill' ],
                         menu_icon='cast',
-                        default_index=1,
+                        default_index=0,
                         styles={
                             "container": {
                                 "padding": "5!important",
