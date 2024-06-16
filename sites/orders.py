@@ -28,10 +28,10 @@ def app():
   dc = {}
   for prd in products:
 
-    if prd[3] not in dc:
-      dc[prd[3]] = [(prd[0],prd[1],prd[2])]
+    if prd[2] not in dc:
+      dc[prd[2]] = [(prd[0],prd[1])]
     else:
-      dc[prd[3]].append((prd[0],prd[1],prd[2]))
+      dc[prd[2]].append((prd[0],prd[1]))
 
   
   rows = []
@@ -53,15 +53,15 @@ def app():
     for r in range(reqRows):
       col = con1.columns(4)
       for c in range(4):
-        if k % 4 >= no_products:
+        if k >= no_products:
           break
         key1 = "p" + str(k)
         key2 = "q" + str(k)
-        col[c].text(prds[k%4][1])
+        col[c].text(prds[k][1])
         
         c1 = col[c].checkbox("Add to Cart",key=key1,on_change=None)
         q1 = col[c].number_input(label="Quantity", max_value=5,min_value=1,value=1,key=key2)
-        rows.append([c1,q1,prds[k%4][1]])
+        rows.append([c1,q1,prds[k][1]])
         k += 1
 
 #Client Form UI
@@ -122,7 +122,7 @@ def app():
 
 
 #Reset Button
-  col1,col2,col3 = st.columns(3)
-  button1 = col1.button("Reset", key='reset', on_click=reset)
-  button2 = col2.button("Order", key='order')
+  col1,col2 = st.columns(2)
+  button1 = col1.button("Reset", key='reset', on_click=reset,use_container_width=True)
+  button2 = col2.button("Order", key='order',use_container_width=True)
 

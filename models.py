@@ -65,15 +65,15 @@ class product:
         self.product_name = name
         self.description = description
         self.price = price
-        self.img_url = img_url
+        #self.img_url = img_url
         self.category = category
 
     def add_product_toDB(self) -> bool:
         flag = True
         db = get_live_db_object(logger1)
         cursor = db.cursor()
-        sql = "INSERT INTO products (p_id, product_name, product_description, price, image_url, category) VALUES (%s, %s, %s, %s, %s, %s)"
-        val = (self.p_id, self.product_name, self.description, self.price, self.img_url, self.category)
+        sql = "INSERT INTO products (p_id, product_name, product_description, price, category) VALUES (%s, %s, %s, %s, %s)"
+        val = (self.p_id, self.product_name, self.description, self.price, self.category)
        
         try:
              logger1.info("DB INSERT query executed")
@@ -100,7 +100,7 @@ class product:
         
         cursor = db.cursor()
         logger1.info("DB SELECT query executed")
-        cursor.execute("SELECT p_id, product_name, image_url, category FROM products")
+        cursor.execute("SELECT p_id, product_name, category FROM products")
         logger1.info("DB Query execution succuessful")
         res = cursor.fetchall()
         cursor.close()

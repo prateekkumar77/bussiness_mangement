@@ -13,7 +13,7 @@ def app():
     col1,col2, = con1.columns(2)
     p_code = col1.text_input(label="Product Code",max_chars=5,key="p_code", placeholder="PO-XXX",value="")
     p_name = col2.text_input(label="Product Name", max_chars=20, key='p_name', placeholder="Enter Product Name")
-    img_url = con1.text_input(label="Product Image URL", max_chars=100, key='p_url', placeholder="Enter Image URL")
+    #img_url = con1.text_input(label="Product Image URL", max_chars=100, key='p_url', placeholder="Enter Image URL")
     col3,col4 = con1.columns(2)
     category = col3.selectbox(label="Select Category",key='cat',options=[None, 'Detox Drink', 'Detox Bowl', 'Overnight-Oats', 'Fat-loss Dinner', 'Other'])
     p_price = col4.number_input(label="Enter Price",min_value=1,value=50,key='p_inp')
@@ -28,7 +28,7 @@ def app():
         #st.markdown(html_clear_input,unsafe_allow_html=True)
 
     if b2:
-        new_product = product(id=p_code,name=p_name,description=p_decription,price=p_price,img_url=img_url,category=category)
+        new_product = product(id=p_code,name=p_name,description=p_decription,price=p_price,category=category)
         res = new_product.add_product_toDB(logger1)
 
         if res:
