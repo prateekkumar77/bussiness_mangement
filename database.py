@@ -1,12 +1,14 @@
 from mysql import connector
+from features import initialize_logger
 
 MYSQL_ROOT_PASSWORD = 'root-pass'
 MYSQL_USER = 'root'
 DATABASE_NAME = 'Test_DB1'
 HOST = 'localhost'
 
+logger = initialize_logger(__name__)
 
-def get_live_db_object(logger):
+def get_live_db_object():
     
     try:
         db = connector.connect(host=HOST,user=MYSQL_USER,password=MYSQL_ROOT_PASSWORD,database=DATABASE_NAME,)
