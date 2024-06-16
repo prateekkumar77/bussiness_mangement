@@ -1,7 +1,16 @@
 import streamlit as st
 import logging
+import urllib.request
+from PIL import Image
+
 
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+
+def getImage(url:str,name:str):
+   urllib.request.urlretrieve(url, "temp/{}.png".format(name))
+   img = Image.open("temp/{}.png".format(name))
+   return img
 
 def initialize_logger(module_name:str=__name__) -> logging.getLoggerClass:
     

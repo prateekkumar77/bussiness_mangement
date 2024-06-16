@@ -2,6 +2,9 @@
 import datetime
 from database import get_live_db_object
 from mysql.connector import Error as mysql_error
+from features import initialize_logger
+
+logger1 = initialize_logger(__name__)
 
 
 class client:
@@ -65,7 +68,7 @@ class product:
         self.img_url = img_url
         self.category = category
 
-    def add_product_toDB(self,logger1) -> bool:
+    def add_product_toDB(self) -> bool:
         flag = True
         db = get_live_db_object(logger1)
         cursor = db.cursor()
@@ -81,12 +84,31 @@ class product:
              flag = False
         
         if flag:
-            print(cursor.rowcount, " record inserted.")
+            #print(cursor.rowcount, " record inserted.")
             db.commit()
             logger1.info(str(cursor.rowcount) + " record inserted")
         cursor.close()
         db.close()
         return flag
+    
+    def getAllProducts() ->list:
+
+        db = get_live_db_object(logger1)
+
+        if db is False:
+            return [-1]
+        
+        cursor = db.cursor()
+        logger1.info("DB SELECT query executed")
+        cursor.execute("SELECT p_id, product_name, image_url, category FROM products")
+        logger1.info("DB Query execution succuessful")
+        res = cursor.fetchall()
+        cursor.close()
+        db.close()
+        logger1.info("DB Disconnected")
+        return res
+
+
 
 
 

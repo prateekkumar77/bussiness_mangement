@@ -1,14 +1,16 @@
 import streamlit as st
-from features import reset, getProductList
-from models import client
+from features import reset, initialize_logger
+from models import client, product
 from streamlit_searchbox import st_searchbox
 import datetime
 
-cart = 0
 
+cart = 0
 
 def search(item:str):
    return ["Test1", "Test2", "Test3", "test4"]
+
+logger = initialize_logger(__name__)
 
 def app():
   global cart
@@ -21,33 +23,46 @@ def app():
 
   st.markdown("<h2>"+st1+"<h2>",unsafe_allow_html=True)
 
-  products = getProductList()
-  no_products = len(products)
-  reqRows = no_products // 4
+  products = product.getAllProducts()
 
-  if no_products % 4 !=0:
-    reqRows = (no_products // 4) + 1
+  dc = {}
+  for prd in products:
+
+    if prd[3] not in dc:
+      dc[prd[3]] = [(prd[0],prd[1],prd[2])]
+    else:
+      dc[prd[3]].append((prd[0],prd[1],prd[2]))
+
   
   rows = []
-
-# Menu GRID UI 
-  expan1 = st.expander("Category 1")
-
-  con1 = expan1.container()
   k = 0
-  for r in range(reqRows):
-    col = con1.columns(4)
-    for c in range(4):
-      if k >= no_products:
-        break
-      key1 = "p" + str(k)
-      key2 = "q" + str(k)
-      col[c].text(products[k])
-      
-      c1 = col[c].checkbox("Add to Cart",key=key1,)
-      q1 = col[c].number_input(label="Quantity", max_value=5,min_value=1,value=1,key=key2)
-      rows.append([c1,q1,products[k]])
-      k += 1
+# Menu GRID UI 
+
+  for category in dc:
+    prds = dc[category]
+    no_products = len(prds)
+    reqRows = no_products // 4
+
+    if no_products % 4 !=0:
+      reqRows = (no_products // 4) + 1
+
+    expan1 = st.expander(category,expanded=True)
+
+    con1 = expan1.container()
+    
+    for r in range(reqRows):
+      col = con1.columns(4)
+      for c in range(4):
+        if k % 4 >= no_products:
+          break
+        key1 = "p" + str(k)
+        key2 = "q" + str(k)
+        col[c].text(prds[k%4][1])
+        
+        c1 = col[c].checkbox("Add to Cart",key=key1,on_change=None)
+        q1 = col[c].number_input(label="Quantity", max_value=5,min_value=1,value=1,key=key2)
+        rows.append([c1,q1,prds[k%4][1]])
+        k += 1
 
 #Client Form UI
   
