@@ -6,8 +6,6 @@ logger1 = initialize_logger(__name__)
 
 
 def app():
-  
-    
     st.header("🏠 :green[Bussiness Overview]",divider=True)
     b1 = st.button("Check DB")
 
@@ -23,38 +21,3 @@ def app():
         else:
             st.warning("Unable to connect to DB. Check DB config")
 
-
-html = """
-        <style>
-        body {
-            padding: 25px;
-            background-color: white;
-            color: black;
-            font-size: 25px;
-        }
-
-        .dark-mode {
-            background-color: black;
-            color: white;
-        }
-
-        .light-mode {
-            background-color: white;
-            color: black;
-        }
-    </style>
-        """
-
-htm2_dark_mode= """
-<script>
-            let element = document.body;
-            element.className = "dark-mode";
-    </script>
-        
-       """
-hmtl_light_mode = """
-<script>
-            let element = document.body;
-            element.className = "light-mode";
-</script>
-"""

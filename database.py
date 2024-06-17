@@ -17,7 +17,7 @@ def get_live_db_object():
         logger.error("Failed to connect to database: %s", err.errno)
         return False
 
-    logger.info("Connection to {DB: "+DATABASE_NAME+"} with {user: "+MYSQL_USER+"} Successful")
+    logger.debug("Connection to {DB: "+DATABASE_NAME+"} with {user: "+MYSQL_USER+"} Successful")
     #print('Connection Established')
 
     return db

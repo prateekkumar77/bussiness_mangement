@@ -36,6 +36,7 @@ def app():
   
   rows = []
   k = 0
+  sb_value = st_searchbox(search_function=client.search_client, key="sb2", placeholder="Search All Clients")
 # Menu GRID UI 
 
   for category in dc:
@@ -61,7 +62,7 @@ def app():
         
         c1 = col[c].checkbox("Add to Cart",key=key1,on_change=None)
         q1 = col[c].number_input(label="Quantity", max_value=5,min_value=1,value=1,key=key2)
-        rows.append([c1,q1,prds[k][2]])
+        rows.append([c1,q1,prds[k][0]])
         k += 1
 
 #Client Form UI
@@ -69,9 +70,9 @@ def app():
   client_check = st.checkbox(label="For Existing Member", key="check1")
 
   client1 = client()
-
   if client_check:
-    sb_value = st_searchbox(search_function=search, key="sb2", clear_on_submit=True, placeholder="Search All Clients")
+    print(sb_value)
+    
     if sb_value:
       st.success("Selected Member: {}".format(sb_value))
     else:
@@ -125,4 +126,7 @@ def app():
   col1,col2 = st.columns(2)
   button1 = col1.button("Reset", key='reset', on_click=reset,use_container_width=True)
   button2 = col2.button("Order", key='order',use_container_width=True)
+
+  #if button2:
+
 

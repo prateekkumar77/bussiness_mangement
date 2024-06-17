@@ -1,5 +1,5 @@
 import streamlit as st
-from models import client
+from models import client,address
 import datetime, random
 from features import initialize_logger
 
@@ -34,18 +34,24 @@ def app():
                     c_id = "CL"
                     c_id += str(random.randint(60000,99999))
                     if cb1:
-                          subs = "N"
-                          end_date = "N/A"
-                          plan = "N/A"
-                    else:
                           subs = "Y"
                           end_date = str(end_date)
+                    else:
+                          subs = "Y"
+                          end_date = "N/A"
+                          plan = "N/A"
 
-                    cl = client(name=name,client_id=c_id, subscribed=subs,end_date=end_date,flat_no=flat_no,society=society,address1=add,email_id=email,phn_no=phn,plan=plan)
-                    if client.save():
-                        logger.info("New Client Data saved to DB ({})".format(name))
-                        st.success("Registered Successfully [Client:{}]")
+                    cl = client(name=name,client_id=c_id, subscribed=subs,end_date=end_date,email_id=email,phn_no=phn,plan=plan)
+                    add1 = address(client_id=c_id,address_type='primary',flat_no=flat_no,society=society,address=add)
+                    if cl.save():
+                        if add1.save() is False:
+                            cl.delete_client(client_id=c_id)
+                            logger.warning("Registration Failed for {}".format(name))
+                            st.warning("Registration Failed. Please try again!")
+                        else:
+                            logger.info("New Client Data saved to DB ({})".format(name))
+                            st.success("Registered Successfully Client:{}".format(name))          
                     else:
                           logger.warning("Registration Failed for {}".format(name))
                           st.warning("Registration Failed. Please try again!")
-                        
+                    

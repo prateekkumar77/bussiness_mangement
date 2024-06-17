@@ -28,8 +28,11 @@ def app():
         #st.markdown(html_clear_input,unsafe_allow_html=True)
 
     if b2:
-        new_product = product(id=p_code,name=p_name,description=p_decription,price=p_price,category=category)
-        res = new_product.add_product_toDB(logger1)
+        if category is None or category == "None":
+            st.warning("Category cannot be None")
+        else:
+            new_product = product(id=p_code,name=p_name,description=p_decription,price=p_price,category=category)
+            res = new_product.add_product_toDB()
 
         if res:
             logger1.info('New Product added '+p_name+" "+p_code)

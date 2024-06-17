@@ -14,16 +14,39 @@ class client:
         self.client_id = client_id
         self.subscribed = subscribed
         self.end_date = end_date
-        self.address1 = address1
-        self.flat_no = flat_no
-        self.society = society
+        #self.address1 = address1
+        #self.flat_no = flat_no
+        #self.society = society
         self.email_id = email_id
         self.phone_no = phn_no
         self.plan = plan
         self.balance = 0
 
 
-    def save(self):
+    def delete_client(self, client_id:str) ->bool:
+        sql = 'DELETE FROM clients WHERE client_id = "{}"'.format(client_id)
+
+        db = get_live_db_object()
+        if db is not False:
+            cursor = db.cursor()
+
+            try:
+                logger1.info("DELETE FROM clients; DB Query Executed")
+                cursor.execute(sql)
+                db.commit()
+                logger1.info(str(cursor.rowcount)+" record deleted from clients table")
+            except mysql_error as err:
+                logger1.error(err)
+                return False
+            cursor.close()
+            db.close()
+            logger1.info("DB connection closed...")
+        else:
+            return False
+        return True
+
+
+    def save(self) ->bool:
         flag = False
         
         if self.client_id is not None and self.name != "":
@@ -61,8 +84,21 @@ class client:
         self.phone_no = phn_no
         self.plan = plan
 
-    def search_and_populate(self, client_name:str="", client_id:str=None) ->bool:
-        pass
+    def search_client(client_name:str) ->list:
+        sql = 'select client_name, client_id, email_id from clients where client_name like "{}%";'.format(client_name)
+        db = get_live_db_object()
+        if db is not False:
+            cursor = db.cursor()
+            logger1.debug("SQL SELECT QUERY EXCECUTED")
+            cursor.execute(sql)
+            logger1.debug(str(cursor.rowcount)+" record(s) fetched")
+            res = cursor.fetchall()
+            print(res)
+        ls = []
+        for r in res:
+            ls.append("{} |---------| {}".format(r[0],r[2]))
+        return ls
+
 
     def getClientInfo(self) ->dict|None:
         if self.client_id is not None:
