@@ -61,7 +61,7 @@ def app():
         
         c1 = col[c].checkbox("Add to Cart",key=key1,on_change=None)
         q1 = col[c].number_input(label="Quantity", max_value=5,min_value=1,value=1,key=key2)
-        rows.append([c1,q1,prds[k][1]])
+        rows.append([c1,q1,prds[k][2]])
         k += 1
 
 #Client Form UI

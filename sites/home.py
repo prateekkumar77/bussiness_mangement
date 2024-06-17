@@ -13,7 +13,7 @@ def app():
 
     if b1:
         logger1.info("DB Connection Check initiated")
-        db = get_live_db_object(logger1)
+        db = get_live_db_object()
         if db is not False:
             st.success("Database Connection Successful")
             #print("Success")
