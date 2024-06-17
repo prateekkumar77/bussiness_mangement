@@ -1,7 +1,9 @@
 import streamlit as st
 from models import client
-import datetime
+import datetime, random
+from features import initialize_logger
 
+logger = initialize_logger(__name__)
 client1 = client()
 
 def app():
@@ -29,4 +31,18 @@ def app():
                 if name == "" or email == "" or phn == "" or add == "":
                     st.warning("Please fill all the above fields")
                 else:
-                    st.success("Registered Successfully")
+                    c_id = "CL"
+                    c_id += str(random.randint(60000,99999))
+                    if cb1:
+                          subs = "N"
+                          end_date = "N/A"
+                          plan = "N/A"
+
+                    cl = client(name=name,client_id=c_id, subscribed=subs,end_date=end_date,flat_no=flat_no,society=society,address1=add,email_id=email,phn_no=phn,plan=plan)
+                    if client.save():
+                        logger.info("New Client Data saved to DB ({})".format(name))
+                        st.success("Registered Successfully [Client:{}]")
+                    else:
+                          logger.warning("Registration Failed for {}".format(name))
+                          st.warning("Registration Failed. Please try again!")
+                        

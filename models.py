@@ -9,7 +9,7 @@ logger1 = initialize_logger(__name__)
 
 class client:
 
-    def __init__(self,name:str="",client_id:str=None,subscribed:bool=False,end_date:datetime=None,flat_no:str="",society:str="",address1:str="",email_id:str="",phn_no:int=None, plan:str="None") -> None:
+    def __init__(self,name:str="",client_id:str=None,subscribed:str="",end_date:datetime=None,flat_no:str="",society:str="",address1:str="",email_id:str="",phn_no:int=None, plan:str="None") -> None:
         self.name = name
         self.client_id = client_id
         self.subscribed = subscribed
@@ -24,10 +24,12 @@ class client:
 
 
     def save(self):
+        flag = False
         
         if self.client_id is not None and self.name != "":
             db = get_live_db_object()
             if db is not False:
+                flag = True
                 cursor = db.cursor()
                 sql = "INSERT INTO clients (email_id, client_name, client_id, phone_number, subscribed, end_date, balance) VALUES (%s, %s, %s, %s, %s, %s, %s)"
                 val = (self.email_id, self.name, self.client_id, self.phone_no, self.subscribed, self.end_date, self.balance)
@@ -36,13 +38,15 @@ class client:
                     cursor.execute(sql,val)
                     logger1.info(cursor.rowcount()+" record inserted into clients table")
                     cursor.close()
-                    #return
+                    
                 except mysql_error as err:
                     logger1.error(err)
+                    flag = False
             db.close()
             logger1.info("DB Disconnected")
         else:
             logger1.warning("Assign values to the object fisrt and then call save()")
+        return flag
             
 
 
