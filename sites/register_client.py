@@ -37,6 +37,9 @@ def app():
                           subs = "N"
                           end_date = "N/A"
                           plan = "N/A"
+                    else:
+                          subs = "Y"
+                          end_date = str(end_date)
 
                     cl = client(name=name,client_id=c_id, subscribed=subs,end_date=end_date,flat_no=flat_no,society=society,address1=add,email_id=email,phn_no=phn,plan=plan)
                     if client.save():
