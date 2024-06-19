@@ -6,3 +6,6 @@ Run using
 
 
 pip freeze > requirements.txt
+
+
+streamlit run streamlit_app.py --server.port 8080

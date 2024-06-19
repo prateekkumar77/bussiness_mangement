@@ -1,6 +1,6 @@
 import streamlit as st
 from features import reset, initialize_logger
-from models import client, product
+from models import client, product, orders
 from streamlit_searchbox import st_searchbox
 import datetime
 
@@ -19,7 +19,7 @@ def app():
 ## Order Page UI
 
   st1 = "IN 🧺 Cart {} item(s) ".format(str(cart))
-  st.header("🥡 :orange[Orders Manager] ",divider=True)
+  st.header("🥡 :orange[New Order Manager] ",divider=True)
 
   st.markdown("<h2>"+st1+"<h2>",unsafe_allow_html=True)
 
@@ -29,14 +29,17 @@ def app():
   for prd in products:
 
     if prd[2] not in dc:
-      dc[prd[2]] = [(prd[0],prd[1])]
+      dc[prd[2]] = [(prd[0],prd[1],prd[3])]
     else:
-      dc[prd[2]].append((prd[0],prd[1]))
+      dc[prd[2]].append((prd[0],prd[1],prd[3]))
 
   
   rows = []
   k = 0
   sb_value = st_searchbox(search_function=client.search_client, key="sb2", placeholder="Search All Clients")
+  print("Value {}".format(sb_value))
+  if sb_value is not None:
+    st.success("Selected Member: {}".format(str(sb_value).split(":")[0]))
 # Menu GRID UI 
 
   for category in dc:
@@ -62,25 +65,28 @@ def app():
         
         c1 = col[c].checkbox("Add to Cart",key=key1,on_change=None)
         q1 = col[c].number_input(label="Quantity", max_value=5,min_value=1,value=1,key=key2)
-        rows.append([c1,q1,prds[k][0]])
+        rows.append([c1,q1,prds[k][0],prds[k][2]])
         k += 1
 
 #Client Form UI
   
   client_check = st.checkbox(label="For Existing Member", key="check1")
 
-  client1 = client()
+  selected_member = ""
   if client_check:
+    selected_member = sb_value
     print(sb_value)
     
     if sb_value:
-      st.success("Selected Member: {}".format(sb_value))
+      #st.success("Selected Member: {}".format(sb_value))
+      pass
     else:
       st.warning("Please Select a Member")
     #print("Selected value {}".format(sb_value))
     con_client = st.container()
   
   else:
+    client1 = client()
     con_client = st.container()
     col1,col2 = con_client.columns(2)
     client_name1 = col1.text_input(label="First Name", key="cl-fname", placeholder="Enter First Name",max_chars=15)
@@ -95,7 +101,7 @@ def app():
 
   ins = con_client.text_area(label="Special Instructions", key="ins1", max_chars=50)
   delivery_time = con_client.time_input(label="Select a delivery Time", value=datetime.time(hour=6,minute=30), help="Time is in IST Timezone")
-  del_date = ""
+  del_date = datetime.date.today()
   cbx3 = con_client.checkbox("Delivery Not Today", key="date_cb")
   if cbx3:
     del_date = con_client.date_input("Choose a Date",value="today",min_value=datetime.date.today())
@@ -106,17 +112,18 @@ def app():
 #Cart Value Calculation
   p = 0
   x = False
-
-  for r in range(no_products):
-    if rows[r][0]:
-      p += rows[r][1]
-    if x is False and rows[r][0] is True:
-      x = True
+  amount = 0
   
-
-  if not x:
-    p = 0
-  
+  print(rows)
+  p_list = []
+  for r1s in rows:
+    #print(r1s)
+    if r1s[0]:
+      p += r1s[1]
+      #print("{} {} {}".format(rows[1],rows[3],rows[]))
+      amount += (r1s[1]*r1s[3])
+      p_list.append([r1s[2],r1s[1]])
+  #print(amount)
   if cart != p:
     cart = p
     st.rerun()
@@ -127,6 +134,24 @@ def app():
   button1 = col1.button("Reset", key='reset', on_click=reset,use_container_width=True)
   button2 = col2.button("Order", key='order',use_container_width=True)
 
-  #if button2:
+  if button2:
+    if p == 0:
+      st.warning("Please select alteast 1 product to place an Order")
+    else:
+      
+      #for ps in rows:
+       # p_list.append([ps[2],ps[1]])
+      print(p_list)
+      if selected_member == "":
+        logger.warning("Member not selected before placing the order")
+        st.warning("Please select a member to place order")
+      else: 
+        od1 = orders(client_id=str(sb_value).split(":")[2].lstrip(), amount=amount,products=p_list,date=str(del_date),time=str(delivery_time),inst=ins)
 
+        if od1.save():
+          logger.info("New order created Order_ID: {}".format(od1.orderID))
+          st.success("Order Created. OrderID: {}".format(od1.orderID))
+        else:
+          logger.warning("Order Failed. Check Debug logs for more info")
+          st.warning("Order Failed. Please Try Again")
 

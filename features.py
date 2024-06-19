@@ -18,7 +18,7 @@ def initialize_logger(module_name:str=__name__) -> logging.getLoggerClass:
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     logger1 = logging.getLogger(module_name)
-    logger1.setLevel(logging.INFO)
+    logger1.setLevel(logging.DEBUG)
 
         # Log to console
     handler = logging.StreamHandler()

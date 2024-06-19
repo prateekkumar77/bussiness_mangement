@@ -16,7 +16,7 @@ def app():
             st.success("Database Connection Successful")
             #print("Success")
             st.markdown("DB Config")
-            st.json({"DB Host":HOST, "DB Name":DATABASE_NAME, "User":MYSQL_USER})
+            st.json({"DB Host":HOST, "DB Name":DATABASE_NAME, "User":MYSQL_USER},expanded=False)
             db.close()
         else:
             st.warning("Unable to connect to DB. Check DB config")

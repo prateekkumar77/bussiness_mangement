@@ -31,16 +31,16 @@ class client:
             cursor = db.cursor()
 
             try:
-                logger1.info("DELETE FROM clients; DB Query Executed")
+                logger1.debug("DELETE FROM clients; DB Query Executed")
                 cursor.execute(sql)
                 db.commit()
-                logger1.info(str(cursor.rowcount)+" record deleted from clients table")
+                logger1.debug(str(cursor.rowcount)+" record deleted from clients table")
             except mysql_error as err:
                 logger1.error(err)
                 return False
             cursor.close()
             db.close()
-            logger1.info("DB connection closed...")
+            logger1.debug("DB connection closed...")
         else:
             return False
         return True
@@ -59,13 +59,13 @@ class client:
                     logger1.info("INSERT INTO clients; DB Query Excuted")
                     cursor.execute(sql,val)
                     db.commit()
-                    logger1.info(str(cursor.rowcount)+" record inserted into clients table")
+                    logger1.debug(str(cursor.rowcount)+" record inserted into clients table")
                     cursor.close()
                     flag = True
                 except mysql_error as err:
                     logger1.error(err)
                 db.close()
-                logger1.info("DB connection closed...")
+                logger1.debug("DB connection closed...")
         else:
             logger1.warning("save() function is called but values are not assigned")
         return flag
@@ -93,53 +93,103 @@ class client:
             cursor.execute(sql)
             logger1.debug(str(cursor.rowcount)+" record(s) fetched")
             res = cursor.fetchall()
-            print(res)
+            #print(res)
+            cursor.close()
+            db.close()
+            logger1.debug("DB connection closed...")
         ls = []
         for r in res:
-            ls.append("{} |---------| {}".format(r[0],r[2]))
+            ls.append("{} : {} : {}".format(r[0],r[2],r[1]))
         return ls
 
 
-    def getClientInfo(self) ->dict|None:
-        if self.client_id is not None:
-            return {}
-        else:
-            return None
-    
+    def getClientInfo(client_id) ->list|None:
+        #sql = 'select client_name, client_id, email_id from clients where client_name like "{}%";'.format(client_id)
+        sql = 'SELECT clients.client_id, clients.client_name, clients.phone_number, client_address1.flat_no, client_address1.society, client_address1.address FROM clients, client_address1 WHERE clients.client_id = client_address1.client_id AND clients.client_id = "{}";'.format(client_id)
+        db = get_live_db_object()
+        if db is not False:
+            cursor = db.cursor()
+            logger1.debug("SQL SELECT QUERY EXCECUTED")
+            cursor.execute(sql)
+            logger1.debug(str(cursor.rowcount)+" record(s) fetched")
+            res = cursor.fetchall()
+            cursor.close()
+            db.close()
+            logger1.debug("DB connection closed...")
+            return res
+        return None
 
-class order:
+class orders:
 
-    def __init__(self, order_id:str, client_id:str, add_id:str, amount:int) -> None:
+    def __init__(self, client_id:str, amount:int, products:list[list[str]], date:str, time:str, inst:str, order_id:str="") -> None:
         self.orderID = order_id
         self.clientID = client_id
-        self.addID = add_id
+        #self.addID = add_id
         #self.products = products
         self.amount = amount
-        self.products = []
+        self.products = products
+        self.delivery_date = date
+        self.instruction = inst
+        self.delivery_time = time
+
+    
+    def save(self) -> bool:
+        flag = False
+        self.orderID = "OD" + str(random.randint(100001,999999))
+        prod_dict = {"DEJ01":0, "DEJ02":0, "DEJ03":0, "DEJ04":0, "DEJ05":0, "DEJ06":0,}
+        if len(self.products) > 0:
+            for prd in self.products:
+                prod_dict[prd[0]] += prd[1]
+        else:
+            logger1.warning("Products are not assigned to orders objects. Can't push data with blank values.")
+            return False
+
+        sql = 'INSERT INTO orders (order_id, client_id, amount, dej01, dej02, dej03, dej04, dej05, dej06, delivery_date, instruction, delivery_time ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        val = (self.orderID, self.clientID, self.amount, prod_dict["DEJ01"], prod_dict["DEJ02"], prod_dict["DEJ03"], prod_dict["DEJ04"], prod_dict["DEJ05"], prod_dict["DEJ06"], self.delivery_date, self.instruction, self.delivery_time)
+
+        db = get_live_db_object()
+        if db is not False:
+            cursor = db.cursor()
+            try:
+                logger1.debug("INSERT INTO orders; DB Query Executed.")
+                cursor.execute(sql,val)
+                db.commit()
+                logger1.debug("{} record inserted into orders table".format(cursor.rowcount))
+                flag = True
+            except mysql_error as err:
+                logger1.error(err)
+            cursor.close()
+            db.close()
+            logger1.debug("DB connection closed...")
+            return flag
+        else:
+            logger1.warning("Unable to connect to database.")
+            return False
+
 
 
     def select_products(self, product_codes:list) ->None:
         self.products = product_codes
 
 
-    def save(self) ->bool:
+    def save1(self) ->bool:
         flag = False
         db = get_live_db_object()
         if db is not False:
             cursor = db.cursor()
             sql = "INSERT INTO orders (order_id, client_id, address_id, products) VALUES (%s, %s, %s, %s)"
             val = (self.orderID, self.clientID, self.addID, self.products)
-            logger1.info("INSERT INTO orders; DB Query Executed")
+            logger1.debug("INSERT INTO orders; DB Query Executed")
             try:
                 cursor.execute(sql,val)
                 db.commit()
-                logger1.info(str(cursor.rowcount) + " record inserted into orders table")
+                logger1.debug(str(cursor.rowcount) + " record inserted into orders table")
                 flag = True
             except mysql_error as err:
                 logger1.err(err)
             cursor.close()
             db.close()
-            logger1.info("DB connection closed...")
+            logger1.debug("DB connection closed...")
         return flag
     
 
@@ -163,16 +213,16 @@ class address:
             sql = "INSERT INTO client_address1 (address_id, client_id, address_type, flat_no, society, address) VALUES (%s, %s, %s, %s, %s, %s)"
             val = (self.addressID, self.client_id, self.address_type, self.flat_no, self.society, self.address)
             try:
-                logger1.info("INSERT INTO client_address;  DB Query Executed")
+                logger1.debug("INSERT INTO client_address;  DB Query Executed")
                 cursor.execute(sql,val)
                 db.commit()
-                logger1.info(str(cursor.rowcount)+" row inserted into client_address1 table")
+                logger1.debug(str(cursor.rowcount)+" row inserted into client_address1 table")
                 flag = True
             except mysql_error as err:
-                logger1.error(err)
+                logger1.debug(err)
             cursor.close()
             db.close()
-            logger1.info("DB connection closed...")
+            logger1.debug("DB connection closed...")
         if flag:
             return self.addressID
         else:
@@ -196,10 +246,10 @@ class product:
         val = (self.p_id, self.product_name, self.description, self.price, self.category)
        
         try:
-             logger1.info("INSERT INTO products; DB Query Executed")
+             logger1.debug("INSERT INTO products; DB Query Executed")
              cursor.execute(sql, val)
              db.commit()
-             logger1.info(str(cursor.rowcount) + " record inserted into produts table")
+             logger1.debug(str(cursor.rowcount) + " record inserted into produts table")
              flag = True
         except mysql_error as err:
              logger1.error(err)
@@ -207,7 +257,7 @@ class product:
             
         cursor.close()
         db.close()
-        logger1.info("DB connection closed...")
+        logger1.debug("DB connection closed...")
         return flag
     
     def getAllProducts() ->list:
@@ -218,20 +268,20 @@ class product:
             return [-1]
         
         cursor = db.cursor()
-        logger1.info("SELECT FROM products; DB Query Executed")
+        logger1.debug("SELECT FROM products; DB Query Executed")
         try:
-            cursor.execute("SELECT p_id, product_name, category FROM products")
+            cursor.execute("SELECT p_id, product_name, category, price FROM products")
         except mysql_error as err:
             logger1.error(err)
             db.close()
-            logger1.info("DB connection closed...")
+            logger1.debug("DB connection closed...")
             return [-1]
         
         res = cursor.fetchall()
-        logger1.info(str(cursor.rowcount)+" row(s) fetched from products table")
+        logger1.debug(str(cursor.rowcount)+" row(s) fetched from products table")
         cursor.close()
         db.close()
-        logger1.info("DB connection closed...")
+        logger1.debug("DB connection closed...")
         return res
 
 

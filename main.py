@@ -35,7 +35,7 @@ class MultiApp:
     with st.sidebar:
       app = option_menu(menu_title='All Apps ',
                         options=[
-                            'Home', 'Account', 'Members', 'Orders', 'Manage Delivery', 'Add Member', 'Add Products'],
+                            'Home', 'Account', 'Members', 'New Order', 'Manage Delivery', 'Add Member', 'Add Products'],
                         icons=[
                             'house-fill', 'person-circle', 'people-fill', 'cart-plus', 'bicycle','person-fill-add','plus-square-fill' ],
                         menu_icon='cast',
@@ -67,7 +67,7 @@ class MultiApp:
       account.app()
     if app == "Members":
       clients.app()
-    if app == "Orders":
+    if app == "New Order":
       orders.app()
     if app == "Manage Delivery":
       delivery.app()
