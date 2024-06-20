@@ -121,16 +121,17 @@ class client:
 
 class orders:
 
-    def __init__(self, client_id:str, amount:int, products:list[list[str]], date:str, time:str, inst:str, order_id:str="") -> None:
+    def __init__(self, client_id:str, amount:int, products:list[list[str]], date:str, time:str, inst:str, p_stat:str="U", d_stat:str="U", order_id:str="") -> None:
         self.orderID = order_id
         self.clientID = client_id
-        #self.addID = add_id
-        #self.products = products
+        self.payment_status = p_stat
+        self.delivery_status = d_stat
         self.amount = amount
         self.products = products
         self.delivery_date = date
         self.instruction = inst
         self.delivery_time = time
+        self.date_created = str(datetime.date.today())
 
     
     def save(self) -> bool:
@@ -144,8 +145,8 @@ class orders:
             logger1.warning("Products are not assigned to orders objects. Can't push data with blank values.")
             return False
 
-        sql = 'INSERT INTO orders (order_id, client_id, amount, dej01, dej02, dej03, dej04, dej05, dej06, delivery_date, instruction, delivery_time ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-        val = (self.orderID, self.clientID, self.amount, prod_dict["DEJ01"], prod_dict["DEJ02"], prod_dict["DEJ03"], prod_dict["DEJ04"], prod_dict["DEJ05"], prod_dict["DEJ06"], self.delivery_date, self.instruction, self.delivery_time)
+        sql = 'INSERT INTO orders (order_id, client_id, amount, dej01, dej02, dej03, dej04, dej05, dej06, delivery_date, instruction, delivery_time, date_created ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        val = (self.orderID, self.clientID, self.amount, prod_dict["DEJ01"], prod_dict["DEJ02"], prod_dict["DEJ03"], prod_dict["DEJ04"], prod_dict["DEJ05"], prod_dict["DEJ06"], self.delivery_date, self.instruction, self.delivery_time, self.date_created)
 
         db = get_live_db_object()
         if db is not False:
@@ -275,7 +276,7 @@ class product:
             logger1.error(err)
             db.close()
             logger1.debug("DB connection closed...")
-            return [-1]
+            return [-2]
         
         res = cursor.fetchall()
         logger1.debug(str(cursor.rowcount)+" row(s) fetched from products table")

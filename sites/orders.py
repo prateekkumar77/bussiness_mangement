@@ -24,6 +24,8 @@ def app():
   st.markdown("<h2>"+st1+"<h2>",unsafe_allow_html=True)
 
   products = product.getAllProducts()
+  if products == [-1]:
+    logger.error("Unable to connect to Database")
 
   dc = {}
   for prd in products:
@@ -36,8 +38,8 @@ def app():
   
   rows = []
   k = 0
-  sb_value = st_searchbox(search_function=client.search_client, key="sb2", placeholder="Search All Clients")
-  print("Value {}".format(sb_value))
+  sb_value = st_searchbox(label="Search Client", search_function=client.search_client, key="sb2", placeholder="Search All Clients")
+  #print("Value {}".format(sb_value))
   if sb_value is not None:
     st.success("Selected Member: {}".format(str(sb_value).split(":")[0]))
 # Menu GRID UI 
@@ -75,7 +77,7 @@ def app():
   selected_member = ""
   if client_check:
     selected_member = sb_value
-    print(sb_value)
+    #print(sb_value)
     
     if sb_value:
       #st.success("Selected Member: {}".format(sb_value))
@@ -107,14 +109,12 @@ def app():
     del_date = con_client.date_input("Choose a Date",value="today",min_value=datetime.date.today())
 
 
-
-
 #Cart Value Calculation
   p = 0
   x = False
   amount = 0
   
-  print(rows)
+  #print(rows)
   p_list = []
   for r1s in rows:
     #print(r1s)
@@ -142,7 +142,7 @@ def app():
       #for ps in rows:
        # p_list.append([ps[2],ps[1]])
       print(p_list)
-      if selected_member == "":
+      if selected_member == "" or selected_member is None:
         logger.warning("Member not selected before placing the order")
         st.warning("Please select a member to place order")
       else: 
@@ -152,6 +152,6 @@ def app():
           logger.info("New order created Order_ID: {}".format(od1.orderID))
           st.success("Order Created. OrderID: {}".format(od1.orderID))
         else:
-          logger.warning("Order Failed. Check Debug logs for more info")
+          logger.warning("Order Failed. Switch to Debug logs for more info")
           st.warning("Order Failed. Please Try Again")
 

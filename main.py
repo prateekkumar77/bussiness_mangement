@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from sites import home ,account, clients, orders, delivery,register_client, add_products
+from sites import home ,account, clients, orders, delivery,register_client, add_products, manage_orders
 from features import html_light_mode,html_dark_mode,html_style_theme_switch
 
 
@@ -35,9 +35,9 @@ class MultiApp:
     with st.sidebar:
       app = option_menu(menu_title='All Apps ',
                         options=[
-                            'Home', 'Account', 'Members', 'New Order', 'Manage Delivery', 'Add Member', 'Add Products'],
+                            'Home', 'Account', 'Members', 'New Order', 'Manage Delivery', 'Add Member', 'Add Products', 'Manage Orders'],
                         icons=[
-                            'house-fill', 'person-circle', 'people-fill', 'cart-plus', 'bicycle','person-fill-add','plus-square-fill' ],
+                            'house-fill', 'person-circle', 'people-fill', 'cart-plus', 'bicycle','person-fill-add','plus-square-fill','layout-text-window-reverse'],
                         menu_icon='cast',
                         default_index=0,
                         styles={
@@ -75,6 +75,7 @@ class MultiApp:
       register_client.app()
     if app == "Add Products":
       add_products.app()
-    
+    if app == "Manage Orders":
+      manage_orders.app()
 
   run()
