@@ -2,10 +2,56 @@ import streamlit as st
 import logging
 import urllib.request
 from PIL import Image
+import pandas as pd
+import matplotlib.pyplot as plt
 
 
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
+def get_line_sale_chart(data:list, colums:list, grid:bool=False, data2:list=None, compare:bool=False):
+    fig, ax = plt.subplots(figsize=(10,7))
+    ax.plot(colums,data, marker='o', linestyle='-.', color='green')
+    ax.grid(grid)
+    ax.set_title("Sale Throughout the Week")
+    ax.set_ylabel("No. of Products Sold")
+    #ax.annotate("34",xy=(data[0],0), xytext=(data[0],0))
+    #ax.annotate('local max', xy=(2, 1), xytext=(3, 1.5),
+     #       arrowprops=dict(facecolor='black', shrink=0.05),
+      #      )
+    if data2 is not None and compare:
+        ax.plot(colums,data2, marker='o', linestyle='-.', color='red')
+    return fig
+
+def get_bar_chart(data:list, columns:list, legend:bool=False):
+    fig, ax = plt.subplots(figsize=(6,4))
+
+    #fruits = ['apple', 'blueberry', 'cherry', 'orange']
+    #counts = [40, 100, 30, 55]
+    #bar_labels = ['Jeevan', 'Amrit', 'Urja', 'Tript']
+    bar_colors = ['tab:red', 'tab:blue', 'tab:green', 'tab:orange']
+
+    ax.bar(columns, data,label=columns , color=bar_colors)
+
+    ax.set_ylabel('Products Sold')
+    ax.set_title('Most Selling Products')
+    if legend:
+        ax.legend(title='Produtcs')
+    return fig
+
+
+def get_fig_pie_plot_for_subscriber(data:list,legend:bool=False):
+    y = data
+    labels1 = ['Subscribed', 'Un-subscribed']
+    exp1 = [0.2,0.1]
+
+    fig1, ax1 = plt.subplots(figsize=(4,5))
+    ax1.pie(y, explode=exp1, labels=labels1, autopct='%1.1f%%',
+        shadow=True, startangle=90)
+    if legend:
+        ax1.legend()
+    ax1.set_title('Subscriptions Overview')
+    ax1.axis('equal')
+    return fig1
 
 def getImage(url:str,name:str):
    urllib.request.urlretrieve(url, "temp/{}.png".format(name))

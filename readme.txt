@@ -9,3 +9,21 @@ pip freeze > requirements.txt
 
 
 streamlit run streamlit_app.py --server.port 8080
+
+
+Theme
+
+[theme]
+base="dark"
+primaryColor="#bd2d91"
+backgroundColor="#20201f"
+secondaryBackgroundColor="#5d5f6b"
+font="monospace"
+
+
+
+docker run --name mysql -d \
+    -p 3306:3306 \
+    -e MYSQL_ROOT_PASSWORD=root-pass\
+    -v mysql:/var/lib/mysql \
+    mysql:latest

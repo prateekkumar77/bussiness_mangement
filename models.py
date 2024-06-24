@@ -103,21 +103,27 @@ class client:
         return ls
 
 
-    def getClientInfo(client_id) ->list|None:
+    def getClientInfo(client_id:str) ->list|bool:
+        #print("client_id :{}:".format(client_id))
         #sql = 'select client_name, client_id, email_id from clients where client_name like "{}%";'.format(client_id)
         sql = 'SELECT clients.client_id, clients.client_name, clients.phone_number, client_address1.flat_no, client_address1.society, client_address1.address FROM clients, client_address1 WHERE clients.client_id = client_address1.client_id AND clients.client_id = "{}";'.format(client_id)
         db = get_live_db_object()
+        cursor = db.cursor()
         if db is not False:
-            cursor = db.cursor()
-            logger1.debug("SQL SELECT QUERY EXCECUTED")
-            cursor.execute(sql)
-            logger1.debug(str(cursor.rowcount)+" record(s) fetched")
-            res = cursor.fetchall()
-            cursor.close()
-            db.close()
-            logger1.debug("DB connection closed...")
-            return res
-        return None
+            try:
+                logger1.debug("SELECT FROM orders, clients; DB Query Executed")
+                cursor.execute(sql)
+                
+            except mysql_error as err:
+                logger1.error(err)
+                return False
+        
+        res = cursor.fetchall()
+        logger1.debug('{} row(s) fetched from DB'.format(len(res)))
+        cursor.close()
+        db.close()
+        #print(res)
+        return res
 
 class orders:
 
@@ -133,7 +139,31 @@ class orders:
         self.delivery_time = time
         self.date_created = str(datetime.date.today())
 
-    
+    def getOrders_cID(client_id:str) ->list|bool:
+        sql = 'SELECT orders.order_id, clients.client_id, clients.email_id, orders.amount, orders.payment_status, orders.delivery_status, orders.date_created FROM orders, clients WHERE orders.client_id = clients.client_id AND orders.client_id = "{}";'.format(client_id)
+
+        db = get_live_db_object()
+        cursor = db.cursor()
+
+        try:
+            logger1.debug("SELECT FROM orders, clients; DB Query Executed")
+            cursor.execute(sql)
+            logger1.debug('{} row(s) fetched from DB'.format(cursor.rowcount))
+        except mysql_error as err:
+            logger1.error(err)
+            return False
+        
+        res = cursor.fetchall()
+        cursor.close()
+        db.close()
+        column_name = ['Order ID', 'Client ID', 'Email ID', 'Amount', 'Payment Status', 'Delivery Status', 'Order Date']
+
+        logger1.debug("DB connection closed...")
+        return res, column_name
+
+    def getOrders_timeFrame(timeFrame:str) ->list|bool:
+        pass
+
     def save(self) -> bool:
         flag = False
         self.orderID = "OD" + str(random.randint(100001,999999))

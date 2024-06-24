@@ -52,7 +52,7 @@ def app():
     if no_products % 4 !=0:
       reqRows = (no_products // 4) + 1
 
-    expan1 = st.expander(category,expanded=True)
+    expan1 = st.expander(category)
 
     con1 = expan1.container()
     
@@ -124,9 +124,9 @@ def app():
       amount += (r1s[1]*r1s[3])
       p_list.append([r1s[2],r1s[1]])
   #print(amount)
-  if cart != p:
-    cart = p
-    st.rerun()
+  #if cart != p:
+   # cart = p
+    #st.rerun()
 
 
 #Reset Button

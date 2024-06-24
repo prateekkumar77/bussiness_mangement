@@ -1,6 +1,9 @@
 import streamlit as st
 from streamlit_searchbox import st_searchbox
+from models import client
+from features import initialize_logger
 
+logger = initialize_logger(__name__)
 
 clients = []
 totalClients = 117 #len(clients)
@@ -29,7 +32,7 @@ def app():
   #st.metric(label="Total Clients", value=totalClients, delta=change, help="Value in color represent the change in numbers in within a week")
 
   #addClientBtn = st.button(label="Register", on_click=addClient)
-  selected_item = st_searchbox(search_function=search, key="search-box",placeholder="Search All Clients")
+  selected_item = st_searchbox(search_function=client.search_client, key="search-box",placeholder="Search All Clients")
   st.markdown("")
   st.markdown("")
   c1,c2,c3 = st.columns(3)
@@ -43,7 +46,15 @@ def app():
      if selected_item == "" or selected_item is None:
         st.warning("Please select a member to take action",icon="🚫")
      else:
-        st.success("Member Data Loaded")
+        cbs = selected_item.split(":")[2].lstrip().rstrip()
+        print(cbs)
+        mem = client.getClientInfo(cbs)[0]
+        if mem is not None:
+         st.json({'client_id': mem[0], 'name':mem[1], 'phone':mem[2], 'flat_no':mem[3], 'society':mem[4], 'address':mem[5]})
+         st.success("Member Data Loaded")
+        else:
+           st.warning("Internal error occured")
+           logger.warning("Member data cannot be fetched")
      
   if button2:
      if selected_item == "" or selected_item is None:
