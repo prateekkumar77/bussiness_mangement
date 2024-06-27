@@ -5,6 +5,9 @@ from models import client
 from pandas import DataFrame
 from models import orders
 import time as tf
+from features import initialize_logger
+
+logger = initialize_logger(__name__)
 
 def app():
     st.header("🛵 :orange[Manage Delivery]",divider='gray')
@@ -48,26 +51,31 @@ def app():
 
         cc1,cc2 = con2.columns(2)
         rb2 = cc1.radio(label='Select Order Type', options=['All', 'Un-delivered'], key='reb2',horizontal=True)
-        ods, col_names = orders.getOrder_timeframe(timeframe)
+        ods, col_names = orders.getOrder_timeframe2(timeframe)
         df = DataFrame(data=ods, columns=col_names)
         if rb2 == 'All':
             mem = df
             #df = df.loc[df['Delivery Status'] == "U"]
             df1 = con3.dataframe(data=df, use_container_width=True, on_select='rerun' ,selection_mode='single-row')
             sel1 = df1["selection"]['rows']
+            cc2.metric(label="No. of Delivery", value=df.shape[0])
         if rb2 == 'Un-delivered':
             x = df.reset_index(drop=True, inplace=False)
             df1 = con3.dataframe(data=x, use_container_width=True, on_select='rerun' ,selection_mode='single-row')
+            sel1 = df1["selection"]['rows']
+            cc2.metric(label="No. of Delivery", value=df.shape[0])
             mem = x
+    
+    flag = False
 
     if sel1 != []:
+        if mem.loc[sel1[0]].at['Delivery Status'] == 'D':
+                flag = True
         con3.success("Order {} selected".format(mem.loc[sel1[0]].at['Order ID']))
-        b_col1,b_col2,b_col3 = con3.columns(3)
-        b1 = b_col1.button(label="Mark as Delivered", key='bd12')
+        b_col1,b_col2 = con3.columns(2)
+        b1 = b_col1.button(label="Mark as Delivered", key='bd12',use_container_width=True, disabled=flag)
+        b2 = b_col2.button(label='Mark as Un-Delivered', key='bd13', use_container_width=True, disabled= not flag)
         if b1:
-            if mem.loc[sel1[0]].at['Delivery Status'] == 'D':
-                st.warning("Order Already Delivered")
-            else:
                 if orders.mark_delivery(status="D", order_id=mem.loc[sel1[0]].at['Order ID']):
                     st.success("Order Marked as Delivered")
                     tf.sleep(5)
@@ -75,3 +83,14 @@ def app():
                     
                 else:
                     st.warning("Action Failed, Try Again")
+                    logger.warning("Delivery Marking Failed")
+
+        if b2:
+                if orders.mark_delivery(status="U", order_id=mem.loc[sel1[0]].at['Order ID']):
+                    st.success("Order Marked as Delivered")
+                    tf.sleep(5)
+                    st.rerun()
+                    
+                else:
+                    st.warning("Action Failed, Try Again")
+                    logger.warning("Delivery Marking Failed")

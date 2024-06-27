@@ -219,6 +219,29 @@ class orders:
         db.close()
         return res, cols
     
+    def getOrder_timeframe2(order_date:str) :
+        sql = 'SELECT orders.order_id, orders.client_id, clients.client_name, clients.phone_number, client_address1.flat_no, client_address1.society, client_address1.address, orders.delivery_time, orders.delivery_status, orders.payment_status FROM orders, clients, client_address1 WHERE orders.client_id = clients.client_id AND clients.client_id = client_address1.client_id AND orders.delivery_date = "{}";'.format(order_date)
+        db = get_live_db_object()
+        if db is False:
+            return False
+        cursor = db.cursor()
+        try:
+            cursor.execute(sql)
+            res = cursor.fetchall()
+            #print("res {}".format(res))
+            logger1.debug("{} row(s) fetched".format(cursor.rowcount))
+        except mysql_error as err:
+            logger1.error(err)
+            return False
+        cols = ['Order ID', 'Client ID', 'Client Name', 'Phone Number', 'Flat No.', 'Society', 'Address', 'Delivery Time', 'Delivery Status' , 'Payment Status']
+        #for r in res:
+         #   r = list(r)
+          #  r[7] = str(r[7])
+        #print(res)
+        cursor.close()
+        db.close()
+        return res, cols
+    
     def getOrders_cID(client_id:str) ->list|bool:
         sql = 'SELECT orders.order_id, clients.client_id, orders.date_created, orders.amount, orders.payment_status, orders.delivery_status, clients.email_id FROM orders, clients WHERE orders.client_id = clients.client_id AND orders.client_id = "{}";'.format(client_id)
 
