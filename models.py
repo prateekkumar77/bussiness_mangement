@@ -139,6 +139,29 @@ class orders:
         self.delivery_time = time
         #self.date_created = str(datetime.date.today())
 
+    def delete_order(order_id:str):
+        sql ='DELETE FROM orders WHERE order_id = "{}";'.format(order_id)
+        db = get_live_db_object()
+        if db is False:
+            return False
+        cursor = db.cursor()
+
+        try:
+            logger1.debug("DELETE FROM orders; DB Query Executed")
+            cursor.execute(sql)
+            db.commit()
+            logger1.debug("{} row deleted".format(cursor.rowcount))
+            cursor.close()
+            db.close()
+            logger1.debug("DB Connection closed....")
+            return True
+        except mysql_error as err:
+            logger1.error(err)
+            cursor.close()
+            db.close()
+            logger1.debug("DB Connection closed....")
+            return False
+
     def mark_delivery(status:str,order_id:str) ->bool:
         sql = 'UPDATE orders SET delivery_status = "{}" WHERE order_id = "{}";'.format(status,order_id)
         db = get_live_db_object()
@@ -156,10 +179,8 @@ class orders:
         logger1.debug("DB Connection Closed...")
         return True
 
-        pass 
-
-    def mark_as_paid(order_id:str) ->bool:
-        sql = 'UPDATE orders SET payment_status = "P" WHERE order_id = "{}";'.format(order_id)
+    def mark_order(order_id:str,mark:str) ->bool:
+        sql = 'UPDATE orders SET payment_status = "{}" WHERE order_id = "{}";'.format(mark, order_id)
         db = get_live_db_object()
         cursor = db.cursor()
         try:

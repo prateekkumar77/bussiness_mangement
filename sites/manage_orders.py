@@ -3,14 +3,9 @@ from streamlit_searchbox import st_searchbox
 from models import client, orders
 from pandas import DataFrame
 import time as tf
+from features import initialize_logger
 
-def call1():
-    global s1
-    s1 = False
-
-    return 'rerun'
-
-s1 = False
+logger = initialize_logger(__name__)
 
 def app():
     global s1
@@ -114,10 +109,29 @@ def app():
         b3 = b_col3.button(label="Delete", key='d-b3', use_container_width=True)
 
         if b1:
-            if orders.mark_as_paid(new_df.loc[sel1[0]].at['Order ID']):
+            if orders.mark_order(new_df.loc[sel1[0]].at['Order ID'], "P"):
                 st.success("Order Marked as PAID")
                 tf.sleep(5)
                 st.rerun()                    
             else:
                 st.warning("Action Failed, Try Again")
+                logger.warning("Order Marking as Paid Failed")
+
+        if b2:
+            if orders.mark_order(new_df.loc[sel1[0]].at['Order ID'], "U"):
+                st.success("Order Marked as UN-PAID")
+                tf.sleep(5)
+                st.rerun()                    
+            else:
+                st.warning("Action Failed, Try Again")
+                logger.warning("Order Marking as UN-PAID Failed")
         
+        if b3:
+            if orders.delete_order(new_df.loc[sel1[0]].at['Order ID']):
+                st.success("Order: {} Deleted from DB".format(new_df.loc[sel1[0]].at['Order ID']))
+                tf.sleep(5)
+                st.rerun()
+            else:
+                st.warning("Action Failed, Try Again")
+                logger.warning("Order Deletion Failed")
+                
