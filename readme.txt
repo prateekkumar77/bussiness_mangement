@@ -22,6 +22,12 @@ font="monospace"
 
 
 
+Mysql
+SET time_zone = "+05:30";
+
+
+Attach Mysql Server
+
 docker run --name mysql -d \
     -p 3306:3306 \
     -e MYSQL_ROOT_PASSWORD=root-pass\

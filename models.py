@@ -137,10 +137,69 @@ class orders:
         self.delivery_date = date
         self.instruction = inst
         self.delivery_time = time
-        self.date_created = str(datetime.date.today())
+        #self.date_created = str(datetime.date.today())
 
+    def mark_delivery(status:str,order_id:str) ->bool:
+        sql = 'UPDATE orders SET delivery_status = "{}" WHERE order_id = "{}";'.format(status,order_id)
+        db = get_live_db_object()
+        cursor = db.cursor()
+        try:
+            logger1.debug("UPDATE orders; DB Ouery Executed")
+            cursor.execute(sql)
+            db.commit()
+            logger1.debug("{} row affected".format(cursor.rowcount))
+        except mysql_error as err:
+            logger1.error(err)
+            return False
+        cursor.close()
+        db.close()
+        logger1.debug("DB Connection Closed...")
+        return True
+
+        pass 
+
+    def mark_as_paid(order_id:str) ->bool:
+        sql = 'UPDATE orders SET payment_status = "P" WHERE order_id = "{}";'.format(order_id)
+        db = get_live_db_object()
+        cursor = db.cursor()
+        try:
+            logger1.debug("UPDATE orders; DB Ouery Executed")
+            cursor.execute(sql)
+            db.commit()
+            logger1.debug("{} row affected".format(cursor.rowcount))
+        except mysql_error as err:
+            logger1.error(err)
+            return False
+        cursor.close()
+        db.close()
+        logger1.debug("DB Connection Closed...")
+        return True
+    
+    def getOrder_timeframe(order_date:str) :
+        sql = 'SELECT orders.order_id, orders.client_id, clients.client_name, clients.phone_number, client_address1.flat_no, client_address1.society, client_address1.address, orders.delivery_time, orders.delivery_status, orders.payment_status FROM orders, clients, client_address1 WHERE orders.client_id = clients.client_id AND clients.client_id = client_address1.client_id AND orders.date_created LIKE "{}%";'.format(order_date)
+        db = get_live_db_object()
+        if db is False:
+            return False
+        cursor = db.cursor()
+        try:
+            cursor.execute(sql)
+            res = cursor.fetchall()
+            #print("res {}".format(res))
+            logger1.debug("{} row(s) fetched".format(cursor.rowcount))
+        except mysql_error as err:
+            logger1.error(err)
+            return False
+        cols = ['Order ID', 'Client ID', 'Client Name', 'Phone Number', 'Flat No.', 'Society', 'Address', 'Delivery Time', 'Delivery Status' , 'Payment Status']
+        #for r in res:
+         #   r = list(r)
+          #  r[7] = str(r[7])
+        #print(res)
+        cursor.close()
+        db.close()
+        return res, cols
+    
     def getOrders_cID(client_id:str) ->list|bool:
-        sql = 'SELECT orders.order_id, clients.client_id, clients.email_id, orders.amount, orders.payment_status, orders.delivery_status, orders.date_created FROM orders, clients WHERE orders.client_id = clients.client_id AND orders.client_id = "{}";'.format(client_id)
+        sql = 'SELECT orders.order_id, clients.client_id, orders.date_created, orders.amount, orders.payment_status, orders.delivery_status, clients.email_id FROM orders, clients WHERE orders.client_id = clients.client_id AND orders.client_id = "{}";'.format(client_id)
 
         db = get_live_db_object()
         cursor = db.cursor()
@@ -156,13 +215,11 @@ class orders:
         res = cursor.fetchall()
         cursor.close()
         db.close()
-        column_name = ['Order ID', 'Client ID', 'Email ID', 'Amount', 'Payment Status', 'Delivery Status', 'Order Date']
+        column_name = ['Order ID', 'Client ID', 'Order Date', 'Amount', 'Payment Status', 'Delivery Status', 'Email ID']
 
         logger1.debug("DB connection closed...")
         return res, column_name
 
-    def getOrders_timeFrame(timeFrame:str) ->list|bool:
-        pass
 
     def save(self) -> bool:
         flag = False
@@ -175,8 +232,8 @@ class orders:
             logger1.warning("Products are not assigned to orders objects. Can't push data with blank values.")
             return False
 
-        sql = 'INSERT INTO orders (order_id, client_id, amount, dej01, dej02, dej03, dej04, dej05, dej06, delivery_date, instruction, delivery_time, date_created ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-        val = (self.orderID, self.clientID, self.amount, prod_dict["DEJ01"], prod_dict["DEJ02"], prod_dict["DEJ03"], prod_dict["DEJ04"], prod_dict["DEJ05"], prod_dict["DEJ06"], self.delivery_date, self.instruction, self.delivery_time, self.date_created)
+        sql = 'INSERT INTO orders (order_id, client_id, amount, dej01, dej02, dej03, dej04, dej05, dej06, delivery_date, instruction, delivery_time ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        val = (self.orderID, self.clientID, self.amount, prod_dict["DEJ01"], prod_dict["DEJ02"], prod_dict["DEJ03"], prod_dict["DEJ04"], prod_dict["DEJ05"], prod_dict["DEJ06"], self.delivery_date, self.instruction, self.delivery_time)
 
         db = get_live_db_object()
         if db is not False:

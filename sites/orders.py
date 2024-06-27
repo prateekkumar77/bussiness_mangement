@@ -141,7 +141,7 @@ def app():
       
       #for ps in rows:
        # p_list.append([ps[2],ps[1]])
-      print(p_list)
+      #print(p_list)
       if selected_member == "" or selected_member is None:
         logger.warning("Member not selected before placing the order")
         st.warning("Please select a member to place order")
