@@ -31,16 +31,34 @@ def app():
     if cb1 == 'Find by Client':
         val = st_searchbox(label="Search Client", search_function=client.search_client, key="sb4", placeholder="Search All Clients")
     
-    
-    con2 = st.container()
-    con3 = st.container()
-    if val is not None and val != "None":
-        timeframe = None
-        st.success("Selected Member : {}".format(val.split(":")[0]))
-        pass
 
     sel1 = []
     mem = []
+    con2 = st.container()
+    con3 = st.container()
+
+
+    if val is not None and val != "None":
+        timeframe = None
+        con2.success("Selected Member : {}".format(val.split(":")[0]))
+        cc1,cc2 = con2.columns(2)
+        rb2 = cc1.radio(label='Select Order Type', options=['All', 'Un-Delivered'], key='rb2',horizontal=True)
+        ods, col_names = orders.getOrders_cID(val.split(":")[2].lstrip().rstrip())
+        df = DataFrame(data=ods, columns=col_names)
+        if rb2 == 'All':
+            mem = df
+            x = con3.dataframe(data=df, use_container_width=True, on_select='rerun' ,selection_mode='single-row')
+            cc2.metric(label="No. of Delivery", value=df.shape[0])
+        if rb2 == 'Un-Delivered':
+            new_df = df.loc[df['Delivery Status'] == "U"]
+            x1 = new_df.reset_index(drop=True,inplace = False)
+            x = con3.dataframe(data=x1, use_container_width=True, on_select='rerun' ,selection_mode='single-row')
+            cc2.metric(label="No. of Delivery", value=x1.shape[0])
+            mem = x1
+        sel1  = x["selection"]['rows']
+
+
+    
     if timeframe is not None:
         val = None
         if timeframe == 'Today':
@@ -61,6 +79,7 @@ def app():
             sel1 = df1["selection"]['rows']
             cc2.metric(label="No. of Delivery", value=df.shape[0])
         if rb2 == 'Un-delivered':
+            df = df.loc[df['Delivery Status'] == "U"]
             x = df.reset_index(drop=True, inplace=False)
             df1 = con3.dataframe(data=x, use_container_width=True, on_select='rerun' ,selection_mode='single-row')
             sel1 = df1["selection"]['rows']

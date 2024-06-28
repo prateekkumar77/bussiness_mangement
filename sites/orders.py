@@ -4,11 +4,7 @@ from models import client, product, orders
 from streamlit_searchbox import st_searchbox
 import datetime
 
-
 cart = 0
-
-def search(item:str):
-   return ["Test1", "Test2", "Test3", "test4"]
 
 logger = initialize_logger(__name__)
 
