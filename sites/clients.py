@@ -25,6 +25,8 @@ def app():
   st.markdown("")
   st.markdown("")
   st.markdown("")
+
+  totalClients = client.get_total_count()
   
   col1,col2 = st.columns(2)
   metric = col1.metric(label="Total Clients", value=totalClients, delta=change, help="Value in color represent the change in numbers in within a week")
@@ -36,14 +38,18 @@ def app():
   st.markdown("")
   st.markdown("")
   c1,c2,c3 = st.columns(3)
-  button1 = c1.button(label="View", type="secondary",use_container_width=True)
-  button2 = c2.button(label="Edit", type="secondary",use_container_width=True)
-  button3 = c3.button(label="Delete", type="secondary",use_container_width=True)
+  flag = True
+  if selected_item is not None and selected_item != "":
+     st.success("{} member selected".format(selected_item.split(":")[0]))
+     flag = False
+  button1 = c1.button(label="View", type="secondary",use_container_width=True, disabled=flag)
+  button2 = c2.button(label="Edit", type="secondary",use_container_width=True, disabled= flag)
+  button3 = c3.button(label="Delete", type="secondary",use_container_width=True, disabled=flag)
   st.markdown("")
   st.markdown("")
 
   if button1:
-     if selected_item == "" or selected_item is None:
+     if selected_item != "" and selected_item is None:
         st.warning("Please select a member to take action",icon="🚫")
      else:
         cbs = selected_item.split(":")[2].lstrip().rstrip()

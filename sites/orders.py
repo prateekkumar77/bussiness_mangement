@@ -11,7 +11,6 @@ logger = initialize_logger(__name__)
 def app():
   global cart
 
-
 ## Order Page UI
 
   st1 = "IN 🧺 Cart {} item(s) ".format(str(cart))
@@ -31,7 +30,6 @@ def app():
     else:
       dc[prd[2]].append((prd[0],prd[1],prd[3]))
 
-  
   rows = []
   k = 0
   sb_value = st_searchbox(label="Search Client", search_function=client.search_client, key="sb2", placeholder="Search All Clients")

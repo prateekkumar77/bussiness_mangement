@@ -22,6 +22,29 @@ class client:
         self.plan = plan
         self.balance = 0
 
+    def get_total_count() -> int:
+        sql = 'SELECT COUNT(*) FROM clients'
+        db = get_live_db_object()
+        if db is False:
+            return -1
+        cursor = db.cursor()
+
+        try:
+            cursor.execute(sql)
+            logger1.debug("{} row fetched".format(cursor.rowcount))
+            res = cursor.fetchall()
+            cursor.close()
+            db.close()
+            logger1.debug("DB Connection Closed...")
+            #print(res)
+            return res[0][0]
+        except mysql_error as err:
+            logger1.error(err)
+            db.close()
+            logger1.debug("DB Connection Closed...")
+            return -1
+          
+
 
     def delete_client(self, client_id:str) ->bool:
         sql = 'DELETE FROM clients WHERE client_id = "{}"'.format(client_id)
@@ -122,6 +145,7 @@ class client:
         logger1.debug('{} row(s) fetched from DB'.format(len(res)))
         cursor.close()
         db.close()
+        logger1.debug("DB Connection Closed...")
         #print(res)
         return res
 
@@ -139,6 +163,28 @@ class orders:
         self.delivery_time = time
         #self.date_created = str(datetime.date.today())
 
+
+    def get_total_count() -> int:
+        sql = 'SELECT COUNT(*) FROM orders'
+        db = get_live_db_object()
+        if db is False:
+            return -1
+        cursor = db.cursor()
+
+        try:
+            cursor.execute(sql)
+            logger1.debug("{} row fetched".format(cursor.rowcount))
+            res = cursor.fetchall()
+            cursor.close()
+            db.close()
+            logger1.debug("DB Connection Closed...")
+            return res[0]
+        except mysql_error as err:
+            logger1.error(err)
+            db.close()
+            logger1.debug("DB Connection Closed...")
+            return -1
+    
     def delete_order(order_id:str):
         sql ='DELETE FROM orders WHERE order_id = "{}";'.format(order_id)
         db = get_live_db_object()
