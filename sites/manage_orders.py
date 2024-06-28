@@ -111,6 +111,7 @@ def app():
         if b1:
             if orders.mark_order(new_df.loc[sel1[0]].at['Order ID'], "P"):
                 st.success("Order Marked as PAID")
+                logger.info("{} Order Marked as paid".format(new_df.loc[sel1[0]].at['Order ID']))
                 tf.sleep(5)
                 st.rerun()                    
             else:
@@ -120,6 +121,7 @@ def app():
         if b2:
             if orders.mark_order(new_df.loc[sel1[0]].at['Order ID'], "U"):
                 st.success("Order Marked as UN-PAID")
+                logger.info("{} Order Marked as un-paid".format(new_df.loc[sel1[0]].at['Order ID']))
                 tf.sleep(5)
                 st.rerun()                    
             else:
@@ -129,6 +131,7 @@ def app():
         if b3:
             if orders.delete_order(new_df.loc[sel1[0]].at['Order ID']):
                 st.success("Order: {} Deleted from DB".format(new_df.loc[sel1[0]].at['Order ID']))
+                logger.info("{} Order Deleted".format(new_df.loc[sel1[0]].at['Order ID']))
                 tf.sleep(5)
                 st.rerun()
             else:

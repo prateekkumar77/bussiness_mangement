@@ -31,6 +31,7 @@ def app():
     if cb1 == 'Find by Client':
         val = st_searchbox(label="Search Client", search_function=client.search_client, key="sb4", placeholder="Search All Clients")
     
+    
     con2 = st.container()
     con3 = st.container()
     if val is not None and val != "None":
