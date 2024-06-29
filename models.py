@@ -14,14 +14,35 @@ class client:
         self.client_id = client_id
         self.subscribed = subscribed
         self.end_date = end_date
-        #self.address1 = address1
-        #self.flat_no = flat_no
-        #self.society = society
         self.email_id = email_id
         self.phone_no = phn_no
         self.plan = plan
         self.balance = 0
 
+    
+    def get_subscribed_count() ->int:
+        sql = 'SELECT COUNT(*) FROM clients WHERE end_date > CURDATE();'
+        db = get_live_db_object()
+        if db is False:
+            return -1
+        cursor = db.cursor()
+
+        try:
+            cursor.execute(sql)
+            logger1.debug("{} row fetched".format(cursor.rowcount))
+            res = cursor.fetchall()
+            cursor.close()
+            db.close()
+            logger1.debug("DB Connection Closed...")
+            #print(res)
+            return res[0][0]
+        except mysql_error as err:
+            logger1.error(err)
+            db.close()
+            logger1.debug("DB Connection Closed...")
+            return -1
+
+    
     def get_total_count() -> int:
         sql = 'SELECT COUNT(*) FROM clients'
         db = get_live_db_object()

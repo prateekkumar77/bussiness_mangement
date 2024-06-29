@@ -27,13 +27,12 @@ def app():
   st.markdown("")
 
   totalClients = client.get_total_count()
+  activeSusbscription = client.get_subscribed_count()
   
   col1,col2 = st.columns(2)
-  metric = col1.metric(label="Total Clients", value=totalClients, delta=change, help="Value in color represent the change in numbers in within a week")
-  metric2 = col2.metric(label="Active Susbcriptions", value=activeSusbscription, delta=changeSusbcription)
-  #st.metric(label="Total Clients", value=totalClients, delta=change, help="Value in color represent the change in numbers in within a week")
-
-  #addClientBtn = st.button(label="Register", on_click=addClient)
+  metric = col1.metric(label="Total Clients", value=totalClients, help="Value in color represent the change in numbers in within a week")
+  metric2 = col2.metric(label="Active Susbcriptions", value=activeSusbscription)
+  
   selected_item = st_searchbox(search_function=client.search_client, key="search-box",placeholder="Search All Clients")
   st.markdown("")
   st.markdown("")
